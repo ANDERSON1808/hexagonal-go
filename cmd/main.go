@@ -11,6 +11,7 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
+	"github.com/joho/godotenv"
 	httpSwagger "github.com/swaggo/http-swagger"
 )
 
@@ -26,6 +27,11 @@ import (
 // @BasePath /
 func main() {
 	fmt.Println("🚀 Servidor corriendo en el puerto 8080...")
+
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("main failed env", err)
+	}
 
 	postgres := db.NewPostgresDB()
 	db.RunMigrations(postgres.DB)
