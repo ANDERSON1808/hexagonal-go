@@ -1,0 +1,6 @@
+# Ignorar archivos innecesarios en la imagen de Docker
+.git
+node_modules
+*.log
+tmp/
+.env

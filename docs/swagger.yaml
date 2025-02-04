@@ -1,0 +1,158 @@
+basePath: /
+definitions:
+  domain.User:
+    properties:
+      active:
+        type: boolean
+      createdAt:
+        type: string
+      email:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: anderson@example.com
+    name: Anderson Dev
+  description: API para manejo de usuarios con arquitectura Hexagonal en Golang.
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  termsOfService: http://swagger.io/terms/
+  title: Hexagonal Golang API
+  version: "1.0"
+paths:
+  /users:
+    post:
+      consumes:
+      - application/json
+      description: Crea un usuario y lo almacena en la base de datos
+      parameters:
+      - description: Datos del usuario
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/domain.User'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/domain.User'
+        "400":
+          description: Invalid request body
+          schema:
+            type: string
+        "500":
+          description: Failed to create user
+          schema:
+            type: string
+      tags:
+      - Usuarios
+  /users/{id}:
+    delete:
+      description: Elimina un usuario de la base de datos según su ID
+      parameters:
+      - description: ID del usuario a eliminar
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "204":
+          description: User deleted successfully
+          schema:
+            type: string
+        "400":
+          description: Invalid ID
+          schema:
+            type: string
+        "404":
+          description: User not found
+          schema:
+            type: string
+        "500":
+          description: Failed to delete user
+          schema:
+            type: string
+      tags:
+      - Usuarios
+    get:
+      description: Devuelve los detalles de un usuario según su ID
+      parameters:
+      - description: ID del usuario
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.User'
+        "400":
+          description: Invalid ID
+          schema:
+            type: string
+        "404":
+          description: User not found
+          schema:
+            type: string
+      tags:
+      - Usuarios
+  /users/all:
+    get:
+      description: Devuelve una lista de todos los usuarios registrados en la base
+        de datos
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/domain.User'
+            type: array
+        "500":
+          description: Failed to fetch users
+          schema:
+            type: string
+      tags:
+      - Usuarios
+  /users/concurrent:
+    post:
+      consumes:
+      - application/json
+      description: Recibe una lista de usuarios y los crea de manera concurrente para
+        mejorar el rendimiento
+      parameters:
+      - description: Lista de usuarios a crear
+        in: body
+        name: users
+        required: true
+        schema:
+          items:
+            $ref: '#/definitions/domain.User'
+          type: array
+      produces:
+      - application/json
+      responses:
+        "202":
+          description: Processing users creation concurrently...
+          schema:
+            type: string
+        "400":
+          description: Invalid request payload
+          schema:
+            type: string
+      tags:
+      - Usuarios
+swagger: "2.0"

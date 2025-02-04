@@ -1,0 +1,28 @@
+version: '3.9'
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: postgres-db
+    restart: always
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: hexagonal_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+#  app:
+#    build: .
+#    container_name: hexagonal-app
+#    depends_on:
+#      - postgres
+#    environment:
+#      DATABASE_URL: "postgres://user:password@postgres:5432/hexagonal_db?sslmode=disable"
+#    ports:
+#      - "8080:8080"
+
+volumes:
+  pgdata:
