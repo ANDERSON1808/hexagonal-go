@@ -2,7 +2,7 @@ package main
 
 import (
 	_ "ANDERSON1808/hexagonal-go/docs"
-	"ANDERSON1808/hexagonal-go/internal/application"
+	"ANDERSON1808/hexagonal-go/internal/application/usecases"
 	"ANDERSON1808/hexagonal-go/internal/infrastructure/db"
 	httphandler "ANDERSON1808/hexagonal-go/internal/infrastructure/http"
 	"ANDERSON1808/hexagonal-go/internal/infrastructure/routes"
@@ -37,7 +37,7 @@ func main() {
 	db.RunMigrations(postgres.DB)
 
 	userRepo := db.NewUserRepository(postgres)
-	userService := application.NewUserService(userRepo)
+	userService := usecases.NewUserService(userRepo)
 	userHandler := httphandler.NewUserHandler(userService)
 
 	router := mux.NewRouter()

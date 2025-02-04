@@ -1,7 +1,7 @@
 package httphandler
 
 import (
-	"ANDERSON1808/hexagonal-go/internal/application"
+	"ANDERSON1808/hexagonal-go/internal/application/usecases"
 	"ANDERSON1808/hexagonal-go/internal/domain"
 	"ANDERSON1808/hexagonal-go/internal/infrastructure/utils"
 	"encoding/json"
@@ -12,10 +12,10 @@ import (
 )
 
 type UserHandler struct {
-	service *application.UserService
+	service *usecases.UserService
 }
 
-func NewUserHandler(service *application.UserService) *UserHandler {
+func NewUserHandler(service *usecases.UserService) *UserHandler {
 	return &UserHandler{service: service}
 }
 

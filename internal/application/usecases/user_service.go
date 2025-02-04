@@ -1,4 +1,4 @@
-package application
+package usecases
 
 import (
 	"ANDERSON1808/hexagonal-go/internal/domain"
