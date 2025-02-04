@@ -3,6 +3,7 @@ package httphandler
 import (
 	"ANDERSON1808/hexagonal-go/internal/application"
 	"ANDERSON1808/hexagonal-go/internal/domain"
+	"ANDERSON1808/hexagonal-go/internal/infrastructure/utils"
 	"encoding/json"
 	"net/http"
 	"strconv"
@@ -31,17 +32,16 @@ func NewUserHandler(service *application.UserService) *UserHandler {
 func (h *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 	var user domain.User
 	if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
-		http.Error(w, "❌ Invalid request", http.StatusBadRequest)
+		utils.JSONErrorResponse(w, http.StatusBadRequest, "Invalid request")
 		return
 	}
 
 	if err := h.service.CreateUser(&user); err != nil {
-		http.Error(w, "❌ Failed to create user", http.StatusInternalServerError)
+		utils.JSONErrorResponse(w, http.StatusInternalServerError, "Failed to create user")
 		return
 	}
 
-	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(user)
+	utils.JSONResponse(w, http.StatusCreated, user)
 }
 
 // GetUser @Summary Obtener un usuario por ID
@@ -57,17 +57,17 @@ func (h *UserHandler) GetUser(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
 	if err != nil {
-		http.Error(w, "❌ Invalid ID", http.StatusBadRequest)
+		utils.JSONErrorResponse(w, http.StatusBadRequest, "Invalid ID")
 		return
 	}
 
 	user, err := h.service.GetUser(uint(id))
 	if err != nil {
-		http.Error(w, "❌ User not found", http.StatusNotFound)
+		utils.JSONErrorResponse(w, http.StatusNotFound, "User not found")
 		return
 	}
 
-	json.NewEncoder(w).Encode(user)
+	utils.JSONResponse(w, http.StatusOK, user)
 }
 
 // GetAllUsers @Summary Obtener todos los usuarios
@@ -80,11 +80,11 @@ func (h *UserHandler) GetUser(w http.ResponseWriter, r *http.Request) {
 func (h *UserHandler) GetAllUsers(w http.ResponseWriter, r *http.Request) {
 	users, err := h.service.GetAllUsers()
 	if err != nil {
-		http.Error(w, "❌ Failed to fetch users", http.StatusInternalServerError)
+		utils.JSONErrorResponse(w, http.StatusInternalServerError, "Failed to fetch users")
 		return
 	}
 
-	json.NewEncoder(w).Encode(users)
+	utils.JSONResponse(w, http.StatusOK, users)
 }
 
 // DeleteUser @Summary Eliminar un usuario por ID
@@ -100,17 +100,17 @@ func (h *UserHandler) DeleteUser(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
 	if err != nil {
-		http.Error(w, "❌ Invalid ID", http.StatusBadRequest)
+		utils.JSONErrorResponse(w, http.StatusBadRequest, "Invalid ID")
 		return
 	}
 
 	err = h.service.DeleteUser(uint(id))
 	if err != nil {
-		http.Error(w, "❌ Failed to delete user", http.StatusInternalServerError)
+		utils.JSONErrorResponse(w, http.StatusInternalServerError, "Failed to delete user")
 		return
 	}
 
-	w.WriteHeader(http.StatusNoContent)
+	utils.JSONResponse(w, http.StatusNoContent, map[string]string{"message": "User deleted successfully"})
 }
 
 // CreateUsersConcurrently @Summary Crear múltiples usuarios concurrentemente
@@ -123,14 +123,13 @@ func (h *UserHandler) DeleteUser(w http.ResponseWriter, r *http.Request) {
 // @Failure 400 {object} string "Invalid request payload"
 // @Router /users/concurrent [post]
 func (h *UserHandler) CreateUsersConcurrently(w http.ResponseWriter, r *http.Request) {
-	var users []domain.User
+	var users []*domain.User
 	if err := json.NewDecoder(r.Body).Decode(&users); err != nil {
-		http.Error(w, "Invalid request payload", http.StatusBadRequest)
+		utils.JSONErrorResponse(w, http.StatusBadRequest, "Invalid request payload")
 		return
 	}
 
 	go h.service.CreateUsersConcurrently(users)
 
-	w.WriteHeader(http.StatusAccepted)
-	w.Write([]byte("Processing users creation concurrently..."))
+	utils.JSONResponse(w, http.StatusAccepted, map[string]string{"message": "Processing users creation concurrently..."})
 }

@@ -31,7 +31,7 @@ func (s *UserService) DeleteUser(id uint) error {
 	return s.repo.Delete(id)
 }
 
-func (s *UserService) CreateUsersConcurrently(users []domain.User) {
+func (s *UserService) CreateUsersConcurrently(users []*domain.User) {
 	var wg sync.WaitGroup
 	var mu sync.Mutex
 
@@ -53,7 +53,7 @@ func (s *UserService) CreateUsersConcurrently(users []domain.User) {
 				return
 			}
 			log.Printf("[INFO] Usuario %s creado exitosamente", u.Name)
-		}(user)
+		}(*user)
 	}
 
 	wg.Wait()
