@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
@@ -46,6 +47,16 @@ func main() {
 
 	router.PathPrefix("/swagger/").Handler(httpSwagger.WrapHandler)
 
-	// Iniciar el servidor
-	log.Fatal(http.ListenAndServe(":8080", router))
+	server := &http.Server{
+		Addr:         ":8080",
+		Handler:      router,
+		ReadTimeout:  10 * time.Second,
+		WriteTimeout: 10 * time.Second,
+		IdleTimeout:  120 * time.Second,
+	}
+
+	log.Println("✅ Servidor iniciado en http://localhost:8080")
+	if err := server.ListenAndServe(); err != nil {
+		log.Fatalf("❌ Error al iniciar el servidor: %v", err)
+	}
 }

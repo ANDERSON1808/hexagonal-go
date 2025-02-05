@@ -53,7 +53,7 @@ func TestRegisterUserRoutes(t *testing.T) {
 				req, _ = http.NewRequest(tc.method, tc.path, bytes.NewBuffer(bodyBytes))
 				req.Header.Set("Content-Type", "application/json")
 			} else {
-				req, _ = http.NewRequest(tc.method, tc.path, nil)
+				req, _ = http.NewRequest(tc.method, tc.path, http.NoBody)
 			}
 
 			rec := httptest.NewRecorder()

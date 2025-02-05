@@ -63,7 +63,7 @@ func (r *UserRepositoryImpl) Delete(id uint) error {
 	return nil
 }
 
-func logAudit(db *gorm.DB, entity string, action string, data interface{}) {
+func logAudit(db *gorm.DB, entity, action string, data any) {
 	jsonData, _ := json.Marshal(data)
 	audit := AuditLog{
 		EntityName: entity,
