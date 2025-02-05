@@ -20,14 +20,18 @@ API en **Golang** con arquitectura **Hexagonal (Ports & Adapters)**, basada en *
 ```
 hexagonal-go/
 │── cmd/                   # Punto de entrada de la aplicación
+│── config/                # Configuración de la aplicación (variables de entorno, etc.)
+│── docs/                  # Documentación (Swagger, README, etc.)
 │── internal/
-│   ├── application/       # Casos de uso (Servicios)
-│   ├── domain/            # Modelos de dominio y repositorios
-│   ├── infrastructure/
-│   │   ├── db/            # Conexión y migraciones de la BD
-│   │   ├── http/          # Controladores HTTP
-│   │   ├── routes/        # Definición de rutas
-│   ├── mocks/             # Mock para pruebas
+│   ├── application/       # Casos de uso (Servicios, lógica de negocio)
+│   │   └── usecases/      # Implementaciones de los casos de uso
+│   │       └── mocks/     # Mock de dependencias para pruebas
+│   ├── domain/            # Modelos de dominio y definición de interfaces (repositorios)
+│   └── infrastructure/
+│       ├── db/            # Conexión, migraciones y repositorios de la BD
+│       ├── http/          # Controladores HTTP (Handlers)
+│       ├── routes/        # Definición de rutas HTTP
+│       └── utils/         # Utilidades generales para la aplicación
 │── migrations/            # Archivos de migración de BD
 │── .env                   # Variables de entorno
 │── docker-compose.yml     # Configuración de Docker
